@@ -17,8 +17,9 @@ struct AdptArray_
 */
 PAdptArray CreateAdptArray(COPY_FUNC copy, DEL_FUNC delete, PRINT_FUNC print)
 {
-    PAdptArray adpt = (PAdptArray)malloc(sizeof(PAdptArray));
-
+    
+    PAdptArray adpt = (PAdptArray)malloc(sizeof(struct AdptArray_));
+    
     adpt->arr = NULL;
     adpt->size = 0;
     adpt->capacity = 0;
@@ -30,31 +31,31 @@ PAdptArray CreateAdptArray(COPY_FUNC copy, DEL_FUNC delete, PRINT_FUNC print)
     return adpt;
 }
 
-void DeleteAdptArray(PAdptArray arr)
+void DeleteAdptArray(PAdptArray adpt)
 {
-    for (int i = 0; i < arr->capacity; i++)
+    for (int i = 0; i < adpt->capacity; i++)
     {
-        free(arr->arr[i]);
+        adpt->del_func(adpt->arr[i]);
     }
 
-    free(arr);
+    // free(adpt);
 }
 
 Result SetAdptArrayAt(PAdptArray adpt, int index, PElement element)
 {
-    if (index >= adpt->capacity) 
+    if (index >= adpt->capacity)
     {
-        adpt = realloc(adpt, sizeof(int)*index);
+        adpt->arr = realloc(adpt->arr, sizeof(PElement) * (index + 1));
 
         if (adpt == NULL)
             return FAIL;
 
-        adpt->capacity = index+1; 
+        adpt->capacity = index + 1;
     }
-    
+
     if (adpt->arr[index] != NULL)
     {
-        free(adpt->arr[index]);
+        adpt->del_func(adpt->arr[index]);
     }
     adpt->arr[index] = adpt->copy_func(element);
     adpt->size++;
@@ -74,13 +75,14 @@ PElement GetAdptArrayAt(PAdptArray adpt, int index)
 
 int GetAdptArraySize(PAdptArray adpt)
 {
-    return adpt->size;
+    return adpt->capacity;
 }
 
 void PrintDB(PAdptArray adpt)
 {
-    for(int i = 0; i <= adpt->size; i++)
+    for (int i = 0; i <= adpt->size; i++)
     {
-        adpt->print_func(adpt->arr[i]);
+        if (adpt->arr[i] != NULL)
+            adpt->print_func(adpt->arr[i]);
     }
 }
