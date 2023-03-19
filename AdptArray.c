@@ -1,5 +1,6 @@
 #include "AdptArray.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 struct AdptArray_
 {
@@ -17,12 +18,11 @@ struct AdptArray_
 */
 PAdptArray CreateAdptArray(COPY_FUNC copy, DEL_FUNC delete, PRINT_FUNC print)
 {
-    
-    PAdptArray adpt = (PAdptArray)malloc(sizeof(struct AdptArray_));
-    
-    adpt->arr = NULL;
+
+    PAdptArray adpt = malloc(sizeof(struct AdptArray_));
+    adpt->arr = malloc(sizeof(PElement));
     adpt->size = 0;
-    adpt->capacity = 0;
+    adpt->capacity = 1;
 
     adpt->copy_func = copy;
     adpt->del_func = delete;
@@ -35,7 +35,8 @@ void DeleteAdptArray(PAdptArray adpt)
 {
     for (int i = 0; i < adpt->capacity; i++)
     {
-        adpt->del_func(adpt->arr[i]);
+        if (adpt->arr[i] != NULL)
+            adpt->del_func(adpt->arr[i]);
     }
 
     // free(adpt);
@@ -50,6 +51,10 @@ Result SetAdptArrayAt(PAdptArray adpt, int index, PElement element)
         if (adpt == NULL)
             return FAIL;
 
+        for (int i = adpt->capacity; i < index + 1; i++)
+        {
+            adpt->arr[i] = NULL;
+        }
         adpt->capacity = index + 1;
     }
 
@@ -65,7 +70,7 @@ Result SetAdptArrayAt(PAdptArray adpt, int index, PElement element)
 
 PElement GetAdptArrayAt(PAdptArray adpt, int index)
 {
-    if (index <= adpt->capacity && adpt->arr[index] != NULL)
+    if (index < adpt->capacity && adpt->arr[index] != NULL)
     {
         return adpt->copy_func(adpt->arr[index]);
     }
@@ -80,7 +85,7 @@ int GetAdptArraySize(PAdptArray adpt)
 
 void PrintDB(PAdptArray adpt)
 {
-    for (int i = 0; i <= adpt->size; i++)
+    for (int i = 0; i < adpt->capacity; i++)
     {
         if (adpt->arr[i] != NULL)
             adpt->print_func(adpt->arr[i]);
