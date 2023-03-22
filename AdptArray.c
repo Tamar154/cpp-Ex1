@@ -17,10 +17,18 @@ struct AdptArray_
 */
 PAdptArray CreateAdptArray(COPY_FUNC copy, DEL_FUNC delete, PRINT_FUNC print)
 {
-
     PAdptArray adpt = malloc(sizeof(struct AdptArray_));
+    if (adpt == NULL){
+        return NULL;
+    }
+    
     adpt->arr = malloc(sizeof(PElement));
-    adpt->size = 0;
+    if (adpt->arr == NULL)
+    {
+        adpt->size = -1;
+    }
+    else
+        adpt->size = 0;
 
     adpt->copy_func = copy;
     adpt->del_func = delete;
@@ -73,7 +81,7 @@ Result SetAdptArrayAt(PAdptArray adpt, int index, PElement element)
 }
 
 /*
-    Returns a copy of the element at arr[index]. 
+    Returns a copy of the element at arr[index].
 */
 PElement GetAdptArrayAt(PAdptArray adpt, int index)
 {
@@ -85,11 +93,18 @@ PElement GetAdptArrayAt(PAdptArray adpt, int index)
     return NULL;
 }
 
+/*
+    Returns the size of the array.
+    -1 if not initialized properly.
+*/
 int GetAdptArraySize(PAdptArray adpt)
 {
     return adpt->size;
 }
 
+/*
+    Prints the elements of the array.
+*/
 void PrintDB(PAdptArray adpt)
 {
     for (int i = 0; i < adpt->size; i++)
