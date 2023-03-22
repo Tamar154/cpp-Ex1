@@ -29,6 +29,9 @@ PAdptArray CreateAdptArray(COPY_FUNC copy, DEL_FUNC delete, PRINT_FUNC print)
     return adpt;
 }
 
+/*
+    Delete the array including all it's elements
+*/
 void DeleteAdptArray(PAdptArray adpt)
 {
     for (int i = 0; i < adpt->size; i++)
@@ -40,6 +43,10 @@ void DeleteAdptArray(PAdptArray adpt)
     free(adpt);
 }
 
+/*
+    Gets an index and an element.
+    sets a copy of the element in arr[index]
+*/
 Result SetAdptArrayAt(PAdptArray adpt, int index, PElement element)
 {
     if (index >= adpt->size)
@@ -65,6 +72,9 @@ Result SetAdptArrayAt(PAdptArray adpt, int index, PElement element)
     return SUCCESS;
 }
 
+/*
+    Returns a copy of the element at arr[index]. 
+*/
 PElement GetAdptArrayAt(PAdptArray adpt, int index)
 {
     if (index < adpt->size && adpt->arr[index] != NULL)
